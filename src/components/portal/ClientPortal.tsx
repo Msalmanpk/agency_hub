@@ -70,6 +70,7 @@ export function ClientPortal({
   bankQrUrl,
 }: ClientPortalProps) {
   const [activeTab, setActiveTab] = useState<PortalTab>('overview');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const tabs = [
     { key: 'overview' as const, label: 'Overview', icon: Briefcase },
@@ -248,23 +249,35 @@ export function ClientPortal({
           </div>
         ) : (
           <>
-            <aside className="w-full md:w-72 bg-[#0B1220] border-b md:border-b-0 md:border-r border-brand-border-dark shrink-0 overflow-x-auto md:overflow-y-auto flex md:flex-col">
-              <div className="p-4 border-b border-brand-border-dark shrink-0">
-                <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-slate-400">Client Portal</p>
-                <h2 className="mt-1 text-base font-semibold text-white">Workspace Navigation</h2>
-                <p className="text-[11px] text-slate-400 mt-1">Review projects, payments, quotations, and chat.</p>
+            <aside className="w-full md:w-72 bg-[#0B1220] border-b md:border-b-0 md:border-r border-brand-border-dark shrink-0 flex flex-col">
+              <div className="p-4 border-b border-brand-border-dark shrink-0 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-slate-400">Client Portal</p>
+                  <h2 className="mt-1 text-base font-semibold text-white">Workspace Navigation</h2>
+                  <p className="text-[11px] text-slate-400 mt-1 hidden md:block">Review projects, payments, quotations, and chat.</p>
+                </div>
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="md:hidden px-3 py-1.5 bg-brand-dark border border-brand-border-dark text-slate-300 hover:text-white rounded text-xs font-semibold flex items-center gap-1 cursor-pointer transition"
+                >
+                  <span>Menu</span>
+                  {isMobileMenuOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                </button>
               </div>
-              <nav className="flex md:flex-col gap-2 p-3 md:p-4 overflow-x-auto md:overflow-x-hidden">
+              <nav className={`p-3 md:p-4 gap-2 flex-col md:flex ${isMobileMenuOpen ? 'flex' : 'hidden md:flex'}`}>
               {tabs.map(tab => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.key;
                 return (
                   <button
                     key={tab.key}
-                    onClick={() => setActiveTab(tab.key)}
-                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer border ${
+                    onClick={() => {
+                      setActiveTab(tab.key);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer border ${
                       isActive
-                        ? 'bg-brand-accent text-white border-brand-accent shadow-sm'
+                        ? 'bg-white text-brand-accent-hover border-white shadow-sm'
                         : 'bg-brand-dark/40 text-slate-300 border-transparent hover:bg-brand-dark/80 hover:text-white'
                     }`}
                   >

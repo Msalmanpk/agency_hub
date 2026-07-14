@@ -187,6 +187,7 @@ export function AdminPanel({
   onBankQrUrlChange,
   onSaveBanking,
 }: AdminPanelProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navItems = [
     { key: 'dashboard' as const, label: 'Dashboard', icon: LayoutDashboard, always: true },
     { key: 'clients' as const, label: 'Clients', icon: Users, always: true },
@@ -463,13 +464,22 @@ export function AdminPanel({
       )}
 
       <div className="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
-        <aside className="w-full md:w-72 bg-[#0B1220] border-b md:border-b-0 md:border-r border-brand-border-dark shrink-0 overflow-x-auto md:overflow-y-auto flex md:flex-col">
-          <div className="p-4 border-b border-brand-border-dark shrink-0">
-            <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-slate-400">Admin Workspace</p>
-            <h2 className="mt-1 text-base font-semibold text-white">Navigation</h2>
-            <p className="text-[11px] text-slate-400 mt-1">Clients, invoices, team, chat, and analytics live here.</p>
+        <aside className="w-full md:w-72 bg-[#0B1220] border-b md:border-b-0 md:border-r border-brand-border-dark shrink-0 flex flex-col">
+          <div className="p-4 border-b border-brand-border-dark shrink-0 flex items-center justify-between">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-slate-400">Admin Workspace</p>
+              <h2 className="mt-1 text-base font-semibold text-white">Navigation</h2>
+              <p className="text-[11px] text-slate-400 mt-1 hidden md:block">Clients, invoices, team, chat, and analytics live here.</p>
+            </div>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden px-3 py-1.5 bg-brand-dark border border-brand-border-dark text-slate-300 hover:text-white rounded text-xs font-semibold flex items-center gap-1 cursor-pointer transition"
+            >
+              <span>Menu</span>
+              {isMobileMenuOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
           </div>
-          <nav className="flex md:flex-col gap-2 p-3 md:p-4 overflow-x-auto md:overflow-x-hidden">
+          <nav className={`p-3 md:p-4 gap-2 flex-col md:flex ${isMobileMenuOpen ? 'flex' : 'hidden md:flex'}`}>
             {navItems
               .filter((item) => item.always || (item.showForOwners && (session?.role === 'owner' || session?.role === 'co_owner')))
               .map((item) => {
@@ -478,10 +488,13 @@ export function AdminPanel({
                 return (
                   <button
                     key={item.key}
-                    onClick={() => onAdminTabChange(item.key)}
-                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer border ${
+                    onClick={() => {
+                      onAdminTabChange(item.key);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer border ${
                       isActive
-                        ? 'bg-brand-accent text-white border-brand-accent shadow-sm'
+                        ? 'bg-white text-brand-accent-hover border-white shadow-sm'
                         : 'bg-brand-dark/40 text-slate-300 border-transparent hover:bg-brand-dark/80 hover:text-white'
                     }`}
                   >
@@ -493,7 +506,7 @@ export function AdminPanel({
           </nav>
         </aside>
 
-        <div className="flex-1 min-w-0 overflow-hidden bg-brand-light-bg">
+        <div className="flex-1 min-w-0 overflow-hidden bg-brand-dark flex flex-col h-full">
         {adminTab === 'clients' ? (
           <>
             <ClientList
