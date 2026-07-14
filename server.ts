@@ -260,7 +260,7 @@ async function getProfileFromRequest(req: express.Request): Promise<any | null> 
   if (isSupabaseConfigured && supabase) {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       if (!fallbackUserId) {
-        console.log("[DIAG] getProfileFromRequest: no Bearer token in Authorization header");
+        // console.log("[DIAG] getProfileFromRequest: no Bearer token in Authorization header");
         return null;
       }
 
@@ -365,7 +365,7 @@ async function getProfileFromRequest(req: express.Request): Promise<any | null> 
   }
 
   if (!userId) {
-    console.log("[DIAG] getProfileFromRequest (local): no authorization token or x-user-id header");
+    // console.log("[DIAG] getProfileFromRequest (local): no authorization token or x-user-id header");
     return null;
   }
 
@@ -1566,36 +1566,43 @@ app.post("/api/auth/login", async (req, res) => {
     }
   }
 
-  const localProfile = findLocalProfileByEmail(targetEmail);
-  if (localProfile && localProfile.password && localProfile.password === password) {
-    res.json({ user: localProfile });
-    return;
-  }
-
-  // Local fallback auth
   const localDb = getLocalData();
-  const localAuthProfile = localDb.profiles.find(
+  const localProfile = localDb.profiles.find(
     (p: any) => p.email.toLowerCase() === targetEmail
   );
 
-  if (!localAuthProfile) {
+  if (!localProfile) {
     res.status(401).json({ error: "Invalid email or password." });
     return;
   }
 
-  if (localAuthProfile.role === "client" && !localAuthProfile.password) {
+  if (localProfile.role === "client" && !localProfile.password) {
     res.status(400).json({ error: "Your invitation has not been completed yet. Please check your email for the invite link to set your password." });
     return;
   }
 
-  if (localAuthProfile.password && localAuthProfile.password !== password) {
+  if (localProfile.password && localProfile.password !== password) {
     recordLoginAttempt(targetEmail, false);
     res.status(401).json({ error: "Invalid email or password." });
     return;
   }
 
-  const { password: _, ...safeProfile } = localAuthProfile;
-  res.json({ user: safeProfile });
+  // Set onboarded_at if not set
+  if (!localProfile.onboarded_at) {
+    localProfile.onboarded_at = new Date().toISOString();
+    saveLocalData(localDb);
+  }
+
+  // Generate local access token
+  const localAccessToken = `local-${crypto.randomBytes(16).toString('hex')}`;
+  localSessionStore.set(localAccessToken, localProfile.id);
+
+  // Log audit log
+  await logAuditEvent(localProfile, "login", `Logged into system`);
+
+  recordLoginAttempt(targetEmail, true);
+  const { password: _, ...safeProfile } = localProfile;
+  res.json({ user: safeProfile, accessToken: localAccessToken });
 });
 
 // Verify Login — Step 2: verify OTP (and passphrase), return session
