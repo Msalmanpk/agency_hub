@@ -165,7 +165,9 @@ export function ChatCommandCenter({
   return (
     <div className="flex-1 flex overflow-hidden bg-brand-light-bg">
       {/* Left Panel: Client List */}
-      <aside className="w-full md:w-80 bg-[#0B1220] border-r border-brand-border-dark flex flex-col shrink-0">
+      <aside className={`w-full md:w-80 bg-[#0B1220] border-r border-brand-border-dark flex flex-col shrink-0 ${
+        selectedClient ? 'hidden md:flex' : 'flex'
+      }`}>
         <div className="p-4 border-b border-brand-border-dark shrink-0">
           <div className="flex items-center gap-2 mb-3">
             <MessageCircle className="w-4 h-4 text-brand-accent" />
@@ -236,32 +238,42 @@ export function ChatCommandCenter({
       </aside>
 
       {/* Center Panel: Message Thread */}
-      <main className="flex-1 bg-brand-light-bg flex flex-col overflow-hidden">
+      <main className={`flex-1 bg-brand-light-bg flex flex-col overflow-hidden ${
+        selectedClient ? 'flex' : 'hidden md:flex'
+      }`}>
         {activeChatClient ? (
           <>
             <div className="px-5 py-4 border-b border-slate-200 shrink-0 bg-white">
               <div className="flex flex-col gap-2">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                      <Users className="w-4 h-4 text-brand-accent" />
-                      {activeChatClient.name}
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-2 mt-1">
-                      {activeChatClient.email ? (
-                        <p className="text-[11px] text-slate-500">{activeChatClient.email}</p>
-                      ) : (
-                        <p className="text-[11px] text-slate-400">Client email loading...</p>
-                      )}
-                      <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${
-                        activeChatClient.status === 'suspended'
-                          ? 'bg-rose-500/10 text-rose-600 border-rose-200'
-                          : activeChatClient.status === 'active'
-                          ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
-                          : 'bg-amber-500/10 text-amber-700 border-amber-200'
-                      }`}>
-                        {activeChatClient.status}
-                      </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => onSelectClient(null as any)}
+                      className="md:hidden px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded text-xs font-semibold cursor-pointer transition"
+                    >
+                      ← Back
+                    </button>
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <Users className="w-4 h-4 text-brand-accent animate-pulse" />
+                        {activeChatClient.name}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        {activeChatClient.email ? (
+                          <p className="text-[11px] text-slate-500">{activeChatClient.email}</p>
+                        ) : (
+                          <p className="text-[11px] text-slate-400">Client email loading...</p>
+                        )}
+                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${
+                          activeChatClient.status === 'suspended'
+                            ? 'bg-rose-500/10 text-rose-600 border-rose-200'
+                            : activeChatClient.status === 'active'
+                            ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
+                            : 'bg-amber-500/10 text-amber-700 border-amber-200'
+                        }`}>
+                          {activeChatClient.status}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -62,7 +62,9 @@ export function ClientList({
   const canManageTeam = sessionRole === 'owner' || sessionRole === 'co_owner';
 
   return (
-    <aside className="w-full md:w-80 bg-[#131E35] border-b md:border-b-0 md:border-r border-brand-border-dark flex flex-col shrink-0">
+    <aside className={`w-full md:w-80 bg-[#131E35] border-b md:border-b-0 md:border-r border-brand-border-dark flex flex-col shrink-0 ${
+      selectedClient ? 'hidden md:flex' : 'flex'
+    }`}>
       {logoUrl && (
         <div className="p-4 border-b border-brand-border-dark bg-brand-dark/20 flex justify-center shrink-0">
           <img src={logoUrl} alt="Agency Logo" className="max-h-12 max-w-full object-contain" referrerPolicy="no-referrer" />

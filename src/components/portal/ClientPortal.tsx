@@ -229,7 +229,7 @@ export function ClientPortal({
   return (
     <Layout
       id="client-portal"
-      className="min-h-screen bg-brand-light-bg flex flex-col font-sans text-slate-800 overflow-x-hidden"
+      className="h-screen bg-brand-light-bg flex flex-col font-sans text-slate-800 overflow-hidden"
       header={header}
       successMsg={successMsg}
       successVariant="portal"

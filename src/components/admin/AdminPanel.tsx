@@ -251,7 +251,7 @@ export function AdminPanel({
   return (
     <Layout
       id="admin-panel"
-      className="min-h-screen bg-brand-dark flex flex-col font-sans text-[#F5F7FA] overflow-x-hidden"
+      className="h-screen bg-brand-dark flex flex-col font-sans text-[#F5F7FA] overflow-hidden"
       header={header}
       successMsg={successMsg}
       successVariant="admin"
@@ -534,28 +534,38 @@ export function AdminPanel({
               onRemoveClient={onRemoveClient}
             />
 
-            <main className="flex-1 bg-brand-dark flex flex-col md:flex-row overflow-y-auto md:overflow-hidden" style={{ scrollbarWidth: 'thin', scrollbarColor: '#3B82F6 #0B1220' }}>
+            <main className={`flex-1 bg-brand-dark flex flex-col md:flex-row overflow-y-auto md:overflow-hidden ${
+              selectedClient ? 'flex' : 'hidden md:flex'
+            }`} style={{ scrollbarWidth: 'thin', scrollbarColor: '#3B82F6 #0B1220' }}>
               {selectedClient ? (
                 <>
                   <div className="flex-1 p-6 overflow-y-auto flex flex-col space-y-6" style={{ scrollbarWidth: 'thin', scrollbarColor: '#3B82F6 #0B1220' }}>
                     <div className="bg-[#131E35] p-5 border border-brand-border-dark rounded-lg flex flex-col space-y-4">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                            {selectedClient.name}
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
-                              selectedClient.status === 'suspended'
-                                ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
-                                : selectedClient.status === 'active'
-                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                                : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                            }`}>
-                              {selectedClient.status === 'suspended' ? 'suspended' : selectedClient.status === 'active' ? 'active' : 'invited'}
-                            </span>
-                          </h2>
-                          <p className="text-xs text-slate-400 mt-0.5">
-                            Client Workspace Identifier: <span className="font-mono text-[10px] bg-brand-dark text-brand-accent px-1.5 py-0.5 border border-brand-border-dark rounded">{selectedClient.id}</span>
-                          </p>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => onSelectClient(null as any)}
+                            className="md:hidden px-3 py-1.5 bg-brand-dark border border-brand-border-dark text-slate-300 hover:text-white rounded text-xs font-semibold cursor-pointer transition"
+                          >
+                            ← Back
+                          </button>
+                          <div>
+                            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                              {selectedClient.name}
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
+                                selectedClient.status === 'suspended'
+                                  ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+                                  : selectedClient.status === 'active'
+                                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                                  : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                              }`}>
+                                {selectedClient.status === 'suspended' ? 'suspended' : selectedClient.status === 'active' ? 'active' : 'invited'}
+                              </span>
+                            </h2>
+                            <p className="text-xs text-slate-400 mt-0.5">
+                              Client Workspace Identifier: <span className="font-mono text-[10px] bg-brand-dark text-brand-accent px-1.5 py-0.5 border border-brand-border-dark rounded">{selectedClient.id}</span>
+                            </p>
+                          </div>
                         </div>
 
                         <button
