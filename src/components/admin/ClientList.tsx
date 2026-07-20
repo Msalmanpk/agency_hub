@@ -62,7 +62,7 @@ export function ClientList({
   const canManageTeam = sessionRole === 'owner' || sessionRole === 'co_owner';
 
   return (
-    <aside className={`w-full md:w-80 bg-[#131E35] border-b md:border-b-0 md:border-r border-brand-border-dark flex flex-col shrink-0 ${
+    <aside className={`w-full md:w-80 bg-[#131E35] border-b md:border-b-0 md:border-r border-brand-border-dark flex flex-col shrink-0 md:h-full md:overflow-y-auto ${
       selectedClient ? 'hidden md:flex' : 'flex'
     }`}>
       {logoUrl && (
@@ -199,7 +199,7 @@ export function ClientList({
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto p-2 space-y-1 bg-brand-dark/10">
+      <div className="p-2 space-y-1 bg-brand-dark/10">
         {clients.length === 0 ? (
           <p className="text-xs text-slate-400 text-center py-6">No clients added yet.</p>
         ) : (

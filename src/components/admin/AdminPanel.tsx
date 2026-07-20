@@ -464,7 +464,7 @@ export function AdminPanel({
       )}
 
       <div className="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
-        <aside className="w-full md:w-72 bg-[#0B1220] border-b md:border-b-0 md:border-r border-brand-border-dark shrink-0 flex flex-col">
+         <aside className="w-full md:w-72 bg-[#0B1220] border-b md:border-b-0 md:border-r border-brand-border-dark shrink-0 flex flex-col md:h-full md:overflow-hidden">
           <div className="p-4 border-b border-brand-border-dark shrink-0 flex items-center justify-between">
             <div>
               <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-slate-400">Admin Workspace</p>
@@ -479,7 +479,7 @@ export function AdminPanel({
               {isMobileMenuOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
           </div>
-          <nav className={`p-3 md:p-4 gap-2 flex-col md:flex ${isMobileMenuOpen ? 'flex' : 'hidden md:flex'}`}>
+          <nav className={`p-3 md:p-4 gap-2 flex-col md:flex md:flex-1 md:overflow-y-auto ${isMobileMenuOpen ? 'flex' : 'hidden md:flex'}`}>
             {navItems
               .filter((item) => item.always || (item.showForOwners && (session?.role === 'owner' || session?.role === 'co_owner')))
               .map((item) => {
